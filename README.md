@@ -5,7 +5,8 @@
 [image2]: ./output_images/HOG_example.jpg
 [image3]: ./output_images/optimization_init.jpg
 [image4]: ./output_images/sliding_windows.jpg
-[image5]: ./output_images/bboxes_and_heat.jpg
+[image5]: ./output_images/bboxes.jpg
+[image6]: ./output_images/heat.jpg
 [video1]: ./project_video.mp4
 
 ###Histogram of Oriented Gradients (HOG)
@@ -30,7 +31,7 @@ Here is an example using the `YCrCb` color space and HOG parameters of `orientat
 ####2. Explain how you settled on your final choice of HOG parameters.
 
 I performed feature selection with Bayesian optimization using Gaussian Processes implemented in `skopt` package.
-Objective function calculates accuracy (negative value) of car/notcar classification with linear SVM.
+Objective function calculates accuracy (negative value) of car/notcar classification with linear SVM and features scaled to zero mean and unit variance before training the classifier.
 I initially searched through the full parameter space including `color_space, orient, hog_channel, cell_per_block, pix_per_cell, spatial_size, hist_bins, spatial_feat, hist_feat'. This initial optimization run showed that `YCrCb` color space leads to best results and including spatial and histogram features leads only to minor improvement. 
 
 After this initial optimization I varied `orient` and `hog\_channel` only for `YCrCb` channel and HOG fores.
@@ -49,22 +50,25 @@ The code for this step is contained in the code cell 1-10 of the IPython noteboo
 
 ####1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
+I used smaller scales for boxes in the upper and larger scales for boxes in the lower part of the bottom half of the image.
+To decide scale sizes, I plotted boxes on test images and make sure that cars fit into them. 
+I initially used overlap of 0.5, but the resulting box density was too small for effective false positive removal so so I increased it to 0.75.
 
-![alt text][image3]
+![alt text][image4]
 
 ####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on four scales using YCrCb 3-channel HOG features, which provided a nice result.  Here are some example images:
+I searched on four scales using YCrCb 3-channel HOG features, which provided a nice result.  
+Here are some example images:
 
-![alt text][image4]
+![alt text][image5]
+
 ---
 
 ### Video Implementation
 
 ####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
 Here's a [link to my video result](./project_video.mp4)
-
 
 ####2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
@@ -74,7 +78,7 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 ### Here are six frames and their corresponding heatmaps:
 
-![alt text][image5]
+![alt text][image6]
 
 ### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
 ![alt text][image6]
