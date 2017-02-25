@@ -1,4 +1,4 @@
-##Car Detection
+##Vehicle Detection
 
 [//]: # (Image References)
 [image1]: ./output_images/car_notcar.jpg
@@ -13,45 +13,42 @@
 
 ####1. Explain how (and identify where in your code) you extracted HOG features from the training images.
 
-The code for this step is contained in the code cell 1-10 of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
+The code for this step is contained in the code cells 2-15 of the IPython notebook and in lines 14 through 62 of the file called `detect_utils.py`).  
 
 I started by reading in all the `vehicle` and `non-vehicle` images from GTI and KITTI data sets.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
 
 ![alt text][image1]
 
-I then divided data data into the train set and the test set. GTI data contains time series of car images so avoid having highly correlated images in test and train set I excluded GTI data from the test set. A better, though laborers,  approach would be to manually separate out GTI images into train and test sets.
+I then divided data data into train set and test sets. Because GTI data contains time series of car images,  I included the GTI data in the train set to high correlations between the train set and the test set. A better, though more laborious,  approach would be to manually separate out time series and divide them between the train and the test sets.
 
 I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes in the train set and displayed them to get a feel for what the `skimage.hog()` output looks like.
 
 Here is an example using the `YCrCb` color space and HOG parameters of `orientations=12`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
-
 ![alt text][image2]
 
 ####2. Explain how you settled on your final choice of HOG parameters.
 
-I performed feature selection with Bayesian optimization using Gaussian Processes implemented in `skopt` package.
-Objective function calculates accuracy (negative value) of car/notcar classification with linear SVM and features scaled to zero mean and unit variance before training the classifier.
-I initially searched through the full parameter space including `color_space, orient, hog_channel, cell_per_block, pix_per_cell, spatial_size, hist_bins, spatial_feat, hist_feat'. This initial optimization run showed that `YCrCb` color space leads to best results and including spatial and histogram features leads only to minor improvement. 
+I performed feature selection with Bayesian optimization using Gaussian Processes implemented in `skopt` package (the code cells 8-12 of the IPython notebook).
+My objective function calculates accuracy (negative value) of car vs notcar classification with linear SVM using features scaled to zero mean and unit variance before training the classifier.
+I initially searched through the full parameter space including `color_space, orient, hog_channel, cell_per_block, pix_per_cell, spatial_size, hist_bins, spatial_feat, hist_feat'. This initial optimization run showed that `YCrCb` color space leads to best results and that including spatial and histogram features leads only to minor improvements. 
+For this reason, my final features are HOG features using the `YCrCb` color space and HOG parameters of `orientations=12`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`.
 
-After this initial optimization I varied `orient` and `hog\_channel` only for `YCrCb` channel and HOG fores.
-Here is the objective function:
+Here is the objective function for the final optimization run:
 
 ![alt text][image3]
-
-The final features are HOG features using the `YCrCb` color space and HOG parameters of `orientations=12`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`.
 
 ####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
 After feature selection I trained a linear SVM using full data set. 
-The code for this step is contained in the code cell 1-10 of the IPython notebook
+The code for this step is contained in the code cell 21 of the IPython notebook
 
 ###Sliding Window Search
 
 ####1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I used smaller scales for boxes in the upper and larger scales for boxes in the lower part of the bottom half of the image.
-To decide scale sizes, I plotted boxes on test images and make sure that cars fit into them. 
+I used smaller scales for boxes in the upper part and larger scales for boxes in the lower part of the bottom half of the image.
+To decide scale sizes, I plotted boxes on test images and make sure that cars fit into them and adjusted them based on the run the results of classification.
 I initially used overlap of 0.5, but then the resulting box density was too small for effective false positive removal so so I increased the overlap to 0.75.
 
 ![alt text][image4]
@@ -62,7 +59,7 @@ Here are some example images:
 
 ![alt text][image5]
 
-To optimize performance of my classifier varied scales of search windows and value of thresholding function. I also played with regularization parameter `C`  of SVM.
+To optimize performance of my classifier I varied scales of search windows and value of thresholding function. I also played with regularization parameter `C`  of SVM but default value of 1.0 worked well.
 
 ---
 
@@ -89,5 +86,14 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 ####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+Challenges faced during implementation of this project:
+- Finding a good balance between density of boxes (both location, scales, overlaps) and thresholding false positives was somewhat challenging. 
 
+Potential problems with the algorithm:
+- Boxes wobble and may disappear  
+- Clearly, false negatives and false positives are still present
+- The algorithm is likely to have worse performance under poor visibility conditions e.g. under dark, bad weather conditions
+
+Possible ways to make the algorithm more robust:
+- Incorporate tracking by remembering positions and velocities of cars detected in previous frames. This could improve detections and reduce wobbling.
+- Improve accuracy of vehicle detection by testing more machine learning algorithms. This could reduce number of False positives and negatives.
