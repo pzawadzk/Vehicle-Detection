@@ -42,6 +42,7 @@ Here is the objective function for the final optimization run with optimal HOG p
 ####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
 After feature selection I trained a linear SVM using full data set and HOG features scaled to zero mean and unit variance.
+I generate HOG features only once per frame  
 The code for this step is contained in the code cell 21 of the IPython notebook.
 
 ###Sliding Window Search
@@ -59,7 +60,8 @@ Here are some example images:
 
 ![alt text][image5]
 
-To optimize performance of my classifier I varied scales of search windows and value of thresholding function. I also played with regularization parameter `C`  of SVM but default value of 1.0 worked well.
+- To optimize classification performance of my model I varied scales of search windows and value of thresholding function. I also played with regularization parameter `C`  of SVM but default value of 1.0 worked well.
+- To optimize computational performance, I calculated HOG features only once per frame and scale. Then I used a function called `get_feature` (lines 82-91 in `detect_utils.py`) to extract features corresponding different sliding window locations.
 
 ---
 
@@ -92,6 +94,7 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 Challenges faced during implementation of this project:
 - Finding a good balance between density of boxes (both location, scales, overlaps) and thresholding false positives was somewhat challenging. 
+- I found that HOG features calculated for full image and HOG features calculated for extracted boxes are not exactly the same. The feature values differed at edges. The algorithm, however, worked well with both "versions features". This is probably because edge features are not very important and that difference is small as it ordinates from box normalization of HOG features.
 
 Potential problems with the algorithm:
 - Boxes wobble and may disappear  
