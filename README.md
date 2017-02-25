@@ -52,23 +52,26 @@ The code for this step is contained in the code cell 1-10 of the IPython noteboo
 
 I used smaller scales for boxes in the upper and larger scales for boxes in the lower part of the bottom half of the image.
 To decide scale sizes, I plotted boxes on test images and make sure that cars fit into them. 
-I initially used overlap of 0.5, but the resulting box density was too small for effective false positive removal so so I increased it to 0.75.
+I initially used overlap of 0.5, but then the resulting box density was too small for effective false positive removal so so I increased the overlap to 0.75.
 
 ![alt text][image4]
 
 ####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-I searched on four scales using YCrCb 3-channel HOG features, which provided a nice result.  
 Here are some example images:
 
 ![alt text][image5]
+
+To optimize performance of my classifier varied scales of search windows and value of thresholding function. I also played with regularization parameter `C`  of SVM.
 
 ---
 
 ### Video Implementation
 
 ####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
-Here's a [link to my video result](./project_video.mp4)
+Here's a [link to my video file](./project_video.mp4)
+
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/xjOohXwxud0/0.jpg)](http://www.youtube.com/watch?v=xjOohXwxud0 "Video Title")
 
 ####2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
@@ -79,14 +82,6 @@ Here's an example result showing the heatmap from a series of frames of video, t
 ### Here are six frames and their corresponding heatmaps:
 
 ![alt text][image6]
-
-### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][image6]
-
-### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![alt text][image7]
-
-
 
 ---
 
