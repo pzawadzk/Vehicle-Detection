@@ -3,8 +3,8 @@
 [//]: # (Image References)
 [image1]: ./output_images/car_notcar.jpg
 [image2]: ./output_images/HOG_example.jpg
-[image3]: ./output_images/sliding_windows.jpg
-[image4]: ./output_images/optimization.jpg
+[image3]: ./output_images/optimization.jpg
+[image4]: ./output_images/sliding_windows.jpg
 [image5]: ./output_images/bboxes_and_heat.jpg
 [video1]: ./project_video.mp4
 
@@ -12,22 +12,29 @@
 
 ####1. Explain how (and identify where in your code) you extracted HOG features from the training images.
 
-The code for this step is contained in the first code cell of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
+The code for this step is contained in the code cell 1-10 of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
 
-I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
+I started by reading in all the `vehicle` and `non-vehicle` images from GTI and KITTI data sets.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
 
 ![alt text][image1]
 
-I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
+I then divided data data into the train set and the test set. GTI data contains time series of car images so avoid having highly correlated images in test and train set I excluded GTI data from the test set. A better, though laborers,  approach would be to manually separate out GTI images into train and test sets.
 
-Here is an example using the `YCrCb` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
+I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes in the train set and displayed them to get a feel for what the `skimage.hog()` output looks like.
+
+Here is an example using the `YCrCb` color space and HOG parameters of `orientations=12`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
 
 ![alt text][image2]
 
 ####2. Explain how you settled on your final choice of HOG parameters.
 
-To sklearn-opt .I tried various combinations of parameters and...
+To select optimal features for car detection I perfomred feature selection with Bayesian optimization using Gaussian Processes implemented in `skopt` package.
+
+```res_gp = gp_minimize(objective, space, n_calls=50)```
+
+Here is the objective function for the final optimizaiton run.
+![alt text][image3]
 
 ####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
