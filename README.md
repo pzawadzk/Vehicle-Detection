@@ -3,7 +3,7 @@
 [//]: # (Image References)
 [image1]: ./output_images/car_notcar.jpg
 [image2]: ./output_images/HOG_example.jpg
-[image3]: ./output_images/optimization.jpg
+[image3]: ./output_images/optimization_init.jpg
 [image4]: ./output_images/sliding_windows.jpg
 [image5]: ./output_images/bboxes_and_heat.jpg
 [video1]: ./project_video.mp4
@@ -30,18 +30,20 @@ Here is an example using the `YCrCb` color space and HOG parameters of `orientat
 ####2. Explain how you settled on your final choice of HOG parameters.
 
 I performed feature selection with Bayesian optimization using Gaussian Processes implemented in `skopt` package.
-I initially searched through 
-full parameter space including     `color_space, orient, hog_channel, cell_per_block, pix_per_cell, spatial_size, hist_bins, spatial_feat, hist_feat'
-`
+Objective function calculates accuracy (negative value) of car/notcar classification with linear SVM.
+I initially searched through the full parameter space including `color_space, orient, hog_channel, cell_per_block, pix_per_cell, spatial_size, hist_bins, spatial_feat, hist_feat'. This initial optimization run showed that `YCrCb` color space leads to best results and including spatial and histogram features leads only to minor improvement. 
 
-```res_gp = gp_minimize(objective, space, n_calls=50)```
+After this initial optimization I varied `orient` and `hog\_channel` only for `YCrCb` channel and HOG fores.
+Here is the objective function:
 
-Here is the objective function for the final optimizaiton run.
 ![alt text][image3]
+
+The final features are HOG features using the `YCrCb` color space and HOG parameters of `orientations=12`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`.
 
 ####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-I trained a linear SVM using...
+After feature selection I trained a linear SVM using full data set. 
+The code for this step is contained in the code cell 1-10 of the IPython notebook
 
 ###Sliding Window Search
 
@@ -53,7 +55,7 @@ I decided to search random window positions at random scales all over the image 
 
 ####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+Ultimately I searched on four scales using YCrCb 3-channel HOG features, which provided a nice result.  Here are some example images:
 
 ![alt text][image4]
 ---
