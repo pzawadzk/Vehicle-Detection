@@ -29,7 +29,19 @@ Here is an example using the `YCrCb` color space and HOG parameters of `orientat
 
 ####2. Explain how you settled on your final choice of HOG parameters.
 
-To select optimal features for car detection I perfomred feature selection with Bayesian optimization using Gaussian Processes implemented in `skopt` package.
+I performed feature selection with Bayesian optimization using Gaussian Processes implemented in `skopt` package.
+I initially searched through 
+full paramter space including     ```color_space, orient, hog_channel
+    C = 1
+    cell_per_block = 2
+    pix_per_cell = 8
+    y_start_stop = [None, None]
+    spatial_size = 16
+    hist_bins = 16
+    hog_feat = True
+    spatial_feat = False
+    hist_feat = False
+```
 
 ```res_gp = gp_minimize(objective, space, n_calls=50)```
 
