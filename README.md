@@ -1,11 +1,11 @@
 ##Car Detection
 
 [//]: # (Image References)
-[image1]: ./output_images/car_notcar.png
+[image1]: ./output_images/car_notcar.jpg
 [image2]: ./output_images/HOG_example.jpg
 [image3]: ./output_images/sliding_windows.jpg
 [image4]: ./output_images/optimization.jpg
-[image5]: ./output_images/bboxes_and_heat.png
+[image5]: ./output_images/bboxes_and_heat.jpg
 [video1]: ./project_video.mp4
 
 ###Histogram of Oriented Gradients (HOG)
