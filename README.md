@@ -78,11 +78,11 @@ I recorded the positions of positive detections in each frame of the video.  Fro
 
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
-### Here are six frames and their corresponding heatmaps:
+Here are six frames and their corresponding heatmaps:
 
 ![alt text][image6]
 
-### Here is an example of a complete vehicle detection pipeline:
+Here is an example of a complete vehicle detection pipeline:
 
 ![alt text][image7]
 
@@ -94,7 +94,7 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 Challenges faced during implementation of this project:
 - Finding a good balance between density of boxes (both location, scales, overlaps) and thresholding false positives was somewhat challenging. 
-- I found that HOG features calculated for full image and HOG features calculated for extracted boxes are not exactly the same. The feature values differed at edges. The algorithm, however, worked well with both "versions features". This is probably because edge features are not very important and that difference is small as it ordinates from box normalization of HOG features.
+- I found that HOG features calculated for a full image and HOG features calculated for extracted boxes are not exactly the same. The feature values differed at edges. The algorithm, however, worked well with both "versions features". This is probably because edge features are not very important and that difference is small as it originates from box normalization of HOG features.
 
 Potential problems with the algorithm:
 - Boxes wobble and may disappear  
